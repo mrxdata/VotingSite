@@ -10,10 +10,10 @@
 }
 
 /* Оформление input */
-input {
+.authInput {
     width: 100%;  /* Поле ввода будет занимать всю ширину */
     padding: 10px;
-    margin: 10px 0;
+    margin: 5px 0;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
@@ -27,6 +27,7 @@ input::placeholder {
 /* Кнопка */
 .authButton {
     width: 100%;
+    margin: 5px 0;
     padding: 10px;
     background-color: #007bff;
     color: white;

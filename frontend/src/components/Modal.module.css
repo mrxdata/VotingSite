@@ -1,3 +1,16 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Убедитесь, что модальное окно будет поверх всего */
+}
+
 .modalContent {
     position: relative;
     background-color: white;
@@ -6,6 +19,18 @@
     max-width: 500px;
     width: 100%;
     margin: 0 auto;
+}
+
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    color: red;
+    background-color: transparent;
+    border: none;
+    font-size: 40px;
+    cursor: pointer;
 }
 
 .optionRow {
@@ -42,19 +67,18 @@
     margin-top: 5px;
 }
 
-.closeButton {
-    display: flex;
-    color: red;
-    background-color: transparent;
-    border: none;
-    font-size: 40px;
-    cursor: pointer;
-    margin-left: auto;
-}
 .error {
     color: red;
     font-size: 14px;
     margin-top: 10px;
 }
 
-
+.optionRowInput {
+    width: 100%;  /* Поле ввода будет занимать всю ширину */
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box; /* Чтобы padding не выходил за пределы */
+}

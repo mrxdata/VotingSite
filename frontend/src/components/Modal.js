@@ -7,7 +7,6 @@ const Modal = ({ onClose, onCreate }) => {
     const [endTime, setEndTime] = useState('');
     const [options, setOptions] = useState(['']);
 
-    // Устанавливаем текущую дату и время как дату начала
     const currentDate = new Date();
     const currentDateString = currentDate.toISOString().split('T')[0]; // yyyy-mm-dd
 
@@ -81,6 +80,7 @@ const Modal = ({ onClose, onCreate }) => {
                     <div>
                         <label>Название:</label>
                         <input
+                            className={styles.optionRowInput}
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
@@ -90,6 +90,7 @@ const Modal = ({ onClose, onCreate }) => {
                     <div>
                         <label>Дата окончания:</label>
                         <input
+                            className={styles.optionRowInput}
                             type="date"
                             value={endDate}
                             onChange={(e) => setEndDate(e.target.value)}
@@ -99,6 +100,7 @@ const Modal = ({ onClose, onCreate }) => {
                     <div>
                         <label>Время окончания:</label>
                         <input
+                            className={styles.optionRowInput}
                             type="time"
                             value={endTime}
                             onChange={(e) => setEndTime(e.target.value)}
@@ -110,6 +112,7 @@ const Modal = ({ onClose, onCreate }) => {
                         {options.map((option, index) => (
                             <div key={index} className={styles.optionRow}>
                                 <input
+                                    className={styles.optionRowInput}
                                     type="text"
                                     placeholder={`Элемент ${index + 1}`}
                                     value={option}

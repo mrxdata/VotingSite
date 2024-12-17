@@ -38,9 +38,10 @@ const AuthForm = () => {
                 <h2>Добро пожаловать на страницу Dashboard</h2>
             ) : (
                 <>
-                    <h2>{isLogin ? 'Вход' : 'Регистрация'}</h2>
+                    <h2 style = {{textAlign: "center"}}>{isLogin ? 'Вход' : 'Регистрация'}</h2>
                     <form onSubmit={handleSubmit}>
                         <input
+                            className={styles.authInput}
                             type="text"
                             placeholder="Логин"
                             value={login}
@@ -48,6 +49,7 @@ const AuthForm = () => {
                             required
                         />
                         <input
+                            className={styles.authInput}
                             type="password"
                             placeholder="Пароль"
                             value={password}

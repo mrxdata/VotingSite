@@ -5,7 +5,8 @@
   "scripts": {
     "init-db": "node db/initTables.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "clean-db": "node db/clearTables.js"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +21,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
+    "node-cron": "^3.0.3",
     "pg": "^8.13.1"
   },
   "devDependencies": {

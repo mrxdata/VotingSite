@@ -3,41 +3,42 @@ const pool = require('./db');
 const createTables = async () => {
     try {
         await pool.query(`
-      CREATE TABLE IF NOT EXISTS Organizers (
-          ID SERIAL PRIMARY KEY,
-          Login VARCHAR(255) NOT NULL,
-          Password VARCHAR(255) NOT NULL
+      CREATE TABLE IF NOT EXISTS organizers (
+          id SERIAL PRIMARY KEY,
+          login VARCHAR(255) NOT NULL,
+          password VARCHAR(255) NOT NULL
       );
 
-      CREATE TABLE IF NOT EXISTS Voters (
-          IP_Address VARCHAR(45) PRIMARY KEY,
-          Captcha_Token VARCHAR(255) NOT NULL,
-          Operating_System VARCHAR(255),
-          Browser VARCHAR(255),
-          Screen_Resolution VARCHAR(50),
-          Device_Type VARCHAR(50),
-          Time_Spent INT,
-          Browser_Language VARCHAR(10)
+      CREATE TABLE IF NOT EXISTS voters (
+          ip_address VARCHAR(45) PRIMARY KEY,
+          captcha_token VARCHAR(255) NOT NULL,
+          operating_system VARCHAR(255),
+          browser VARCHAR(255),
+          screen_resolution VARCHAR(50),
+          device_type VARCHAR(50),
+          time_spent INT,
+          browser_language VARCHAR(10)
       );
 
-      CREATE TABLE IF NOT EXISTS Events (
-          Event_ID SERIAL PRIMARY KEY,
-          Name VARCHAR(255) NOT NULL,
-          Start_DateTime TIMESTAMP NOT NULL,
-          End_DateTime TIMESTAMP NOT NULL,
-          Organizer_ID INT NOT NULL,
-          Options TEXT,
-          FOREIGN KEY (Organizer_ID) REFERENCES Organizers(ID)
+      CREATE TABLE IF NOT EXISTS events (
+          event_id SERIAL PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          start_datetime TIMESTAMP NOT NULL,
+          end_datetime TIMESTAMP NOT NULL,
+          organizer_id INT NOT NULL,
+          options JSONB,
+          results JSONB,
+          FOREIGN KEY (organizer_id) REFERENCES organizers(id)
       );
 
-      CREATE TABLE IF NOT EXISTS Votes (
-          Vote_ID SERIAL PRIMARY KEY,
-          Selected_Element INT NOT NULL,
-          Event_ID INT NOT NULL,
-          Voter_IP VARCHAR(45) NOT NULL,
-          Vote_Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (Event_ID) REFERENCES Events(Event_ID),
-          FOREIGN KEY (Voter_IP) REFERENCES Voters(IP_Address)
+      CREATE TABLE IF NOT EXISTS votes (
+          vote_id SERIAL PRIMARY KEY,
+          selected_element VARCHAR(50) NOT NULL,
+          event_id INT NOT NULL,
+          voter_ip VARCHAR(45) NOT NULL,
+          vote_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (event_id) REFERENCES events(event_id),
+          FOREIGN KEY (voter_ip) REFERENCES voters(ip_address)
       );
     `);
 

@@ -1,0 +1,22 @@
+.optionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.optionItem {
+    font-size: 16px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.optionItem input {
+    cursor: pointer;
+}
+
+.voteRadioButton {
+    display: flex;
+}
