@@ -54,7 +54,6 @@ const AuthForm = ({ onLogin }) => {
                         />
                         <button type="submit">{isLogin ? 'Войти' : 'Зарегистрироваться'}</button>
                     </form>
-                    <div className="message">{message}</div>
                     <button className="switch" onClick={() => setIsLogin(!isLogin)}>
                         {isLogin ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти'}
                     </button>
