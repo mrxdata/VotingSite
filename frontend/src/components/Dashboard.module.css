@@ -1,0 +1,23 @@
+.createEventButton {
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.createEventButton:hover {
+    background-color: #45a049;
+}
+
+.eventsTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.eventsTable th, .eventsTable td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}

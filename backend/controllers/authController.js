@@ -4,18 +4,31 @@ const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
     const { login, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10); // Хешируем пароль
+
+    if (!/^[a-zA-Z0-9]{5,20}$/.test(login)) {
+        return res.status(400).json({ message: 'Логин должен содержать от 5 до 20 символов: буквы или цифры.' });
+    }
 
     try {
+        // Проверка существующего пользователя
+        const userExists = await pool.query('SELECT * FROM Organizers WHERE Login = $1', [login]);
+        if (userExists.rows.length > 0) {
+            return res.status(400).json({ message: 'Пользователь с таким логином уже существует.' });
+        }
+
+        // Хеширование пароля и создание пользователя
+        const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = await pool.query(
             'INSERT INTO Organizers (Login, Password) VALUES ($1, $2) RETURNING *',
             [login, hashedPassword]
         );
+
         res.status(201).json({ message: 'Организатор зарегистрирован', user: newUser.rows[0] });
     } catch (err) {
         res.status(500).json({ message: 'Ошибка регистрации', error: err.message });
     }
 };
+
 
 exports.login = async (req, res) => {
     const { login, password } = req.body;

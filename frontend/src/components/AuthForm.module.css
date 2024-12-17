@@ -1,0 +1,58 @@
+
+.container {
+    max-width: 400px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+/* Оформление input */
+input {
+    width: 100%;  /* Поле ввода будет занимать всю ширину */
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box; /* Чтобы padding не выходил за пределы */
+}
+
+input::placeholder {
+    color: #aaa; /* Цвет текста placeholder */
+}
+
+/* Кнопка */
+.authButton {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.authButton:hover {
+    color: #0056b3;
+}
+
+.message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.switch {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+    background-color: transparent;
+    color: #007bff;
+    border: none;
+    cursor: pointer;
+}

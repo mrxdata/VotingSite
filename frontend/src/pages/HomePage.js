@@ -3,7 +3,7 @@ import AuthForm from '../components/AuthForm';
 
 const HomePage = () => {
     return (
-        <div>
+        <div style={{margin: "auto auto"}}>
             <h1>ОТКонкурс</h1>
             <AuthForm />
         </div>

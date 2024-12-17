@@ -1,87 +1,27 @@
-/* App.css */
-
-/* Общее оформление для приложения */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
 }
 
 h1 {
-  font-size: 4rem;
-  color: #333;
-  text-align: center;
-  margin-bottom: 20px;
+    font-size: 4rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 h2 {
-  color: #333;
-  text-align: center;
-  margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-/* Контейнер для формы */
-.container {
-  width: 100%;
-  max-width: 400px;  /* Максимальная ширина формы */
-  padding: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box; /* Чтобы padding не выходил за пределы формы */
-  margin-bottom: 160px;
-}
-
-/* Оформление input */
-input {
-  width: 100%;  /* Поле ввода будет занимать всю ширину */
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-  box-sizing: border-box; /* Чтобы padding не выходил за пределы */
-}
-
-input::placeholder {
-  color: #aaa; /* Цвет текста placeholder */
-}
-
-/* Кнопка */
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-button:hover {
-  color: #0056b3;
-}
-
-/* Сообщения об ошибке или успехе */
-.message {
-  color: red;
-  font-size: 14px;
-  margin-top: 10px;
-}
-
-.switch {
-  display: block;
-  width: 100%;
-  text-align: center;
-  margin-top: 10px;
-  background-color: transparent;
-  color: #007bff;
-  border: none;
-  cursor: pointer;
+#root {
+    width: 100vw;
+    height: 100vh;
 }

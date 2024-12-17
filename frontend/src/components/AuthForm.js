@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Dashboard from './Dashboard'; // Импортируем панель управления
+import { useNavigate } from 'react-router-dom';
+import styles from "./AuthForm.module.css";
 
-const AuthForm = ({ onLogin }) => {
+const AuthForm = () => {
     const [isLogin, setIsLogin] = useState(true);
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const [isAuthenticated, setIsAuthenticated] = useState(false); // Состояние авторизации
+    const navigate = useNavigate(); // Хук для навигации
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,22 +20,22 @@ const AuthForm = ({ onLogin }) => {
 
             const response = await axios.post(url, { login, password });
 
-            if (response.data.token) {
-                onLogin(response.data.token);
+            if (response.status === 201 || response.status === 200) {
+                alert(isLogin ? 'Авторизация успешна!' : 'Регистрация успешна!');
+                localStorage.setItem('authToken', response.data.token);
                 setIsAuthenticated(true);
-                alert('Авторизация успешна!'); // Показываем alert при успехе
-            } else {
-                alert('Произошла ошибка при авторизации.');
+                navigate('/dashboard'); // Перенаправляем на страницу /dashboard
             }
         } catch (error) {
-            alert(error.response?.data?.message || 'Произошла ошибка'); // Alert с текстом ошибки
+            // Обрабатываем ошибки и показываем alert
+            alert(error.response?.data?.message || 'Произошла ошибка при запросе.');
         }
     };
 
     return (
-        <div className="container">
+        <div className={ styles.container }>
             {isAuthenticated ? (
-                <Dashboard /> // Показываем панель управления после авторизации
+                <h2>Добро пожаловать на страницу Dashboard</h2>
             ) : (
                 <>
                     <h2>{isLogin ? 'Вход' : 'Регистрация'}</h2>
@@ -52,9 +54,9 @@ const AuthForm = ({ onLogin }) => {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                        <button type="submit">{isLogin ? 'Войти' : 'Зарегистрироваться'}</button>
+                        <button className={styles.authButton} type="submit">{isLogin ? 'Войти' : 'Зарегистрироваться'}</button>
                     </form>
-                    <button className="switch" onClick={() => setIsLogin(!isLogin)}>
+                    <button className={styles.switch} onClick={() => setIsLogin(!isLogin)}>
                         {isLogin ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти'}
                     </button>
                 </>
