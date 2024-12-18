@@ -1,48 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom'; // Импортируем useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 import Modal from './Modal';
-import { jwtDecode } from 'jwt-decode'; // Используем jwt_decode, а не jwtDecode
+import { jwtDecode } from 'jwt-decode';
 import styles from "./Dashboard.module.css";
 
 const Dashboard = () => {
     const [events, setEvents] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const navigate = useNavigate(); // Хук для навигации
+    const navigate = useNavigate();
 
-    // Функция для получения ID организатора
     const getOrganizerId = () => {
         const token = localStorage.getItem('authToken');
         if (!token) {
             return null;
         }
 
-        const decodedToken = jwtDecode(token); // Используем jwt_decode
+        const decodedToken = jwtDecode(token);
         return decodedToken.id;
     };
 
-    // Функция для получения мероприятий
     const fetchEvents = async () => {
         try {
             const response = await axios.get('http://localhost:5000/api/events/events', {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('authToken')}`, // Отправляем токен
+                    Authorization: `Bearer ${localStorage.getItem('authToken')}`,
                 },
             });
 
-            const organizer_id = getOrganizerId(); // Получаем текущего организатора
-            const filteredEvents = response.data.filter(event => event.organizer_id === organizer_id); // Фильтруем события
+            const organizer_id = getOrganizerId();
+            const filteredEvents = response.data.filter(event => event.organizer_id === organizer_id);
 
-            setEvents(filteredEvents); // Сохраняем отфильтрованные мероприятия
+            setEvents(filteredEvents);
         } catch (error) {
             console.error('Ошибка при получении мероприятий:', error);
         }
     };
 
     useEffect(() => {
-        // Загружаем мероприятия при монтировании компонента
         (async () => {
-            await fetchEvents(); // Загружаем мероприятия
+            await fetchEvents();
         })();
     }, []);
 
@@ -63,7 +60,7 @@ const Dashboard = () => {
             if (error.response && error.response.status === 401) {
                 alert('Ваша сессия истекла. Пожалуйста, войдите снова.');
                 localStorage.removeItem('authToken');
-                navigate('/'); // Перенаправляем на страницу авторизации
+                navigate('/');
             } else {
                 console.error('Ошибка при создании мероприятия:', error.response ? error.response.data : error.message);
             }
@@ -94,7 +91,7 @@ const Dashboard = () => {
     return (
         <div className={styles.dashboardContainer}>
             <div className={styles.header}>
-                <h1 style={{ textAlign: "center" }}>Активные мероприятия</h1>
+                <h1 style={{ textAlign: "center" }}>Список мероприятий</h1>
                 <button className={styles.createEventButton} onClick={openModal}>
                     Создать мероприятие
                 </button>

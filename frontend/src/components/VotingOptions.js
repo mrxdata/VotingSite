@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './VotingOptions.module.css'; // Импорт стилей
+import styles from './VotingOptions.module.css';
 
 const VotingOptions = ({ options, selectedOption, setSelectedOption }) => {
     return (

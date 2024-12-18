@@ -10,7 +10,6 @@ const countVotes = async (eventId) => {
             return [];
         }
 
-        // Подсчитываем количество голосов для каждой опции
         const voteCount = {};
         votes.rows.forEach(vote => {
             const selectedElement = vote.selected_element;
@@ -21,7 +20,6 @@ const countVotes = async (eventId) => {
             }
         });
 
-        // Преобразуем результат в массив
         const results = Object.keys(voteCount).map(option => {
             const count = voteCount[option];
             const percentage = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
@@ -39,8 +37,6 @@ const countVotes = async (eventId) => {
     }
 };
 
-
-// Функция для закрытия голосования для мероприятий с истекшим временем
 const closeExpiredEvents = async () => {
     try {
         const currentDate = new Date();
@@ -50,7 +46,6 @@ const closeExpiredEvents = async () => {
         for (let event of events.rows) {
             const results = await countVotes(event.event_id);
 
-            // Обновляем данные о результатах в базе
             await pool.query('UPDATE events SET results = $1 WHERE event_id = $2', [JSON.stringify(results), event.event_id]);
         }
     } catch (err) {
@@ -58,7 +53,6 @@ const closeExpiredEvents = async () => {
     }
 };
 
-// Запуск задачи каждый раз в минуту
 cron.schedule('*/1 * * * *', closeExpiredEvents);
 exports.createEvent = async (req, res) => {
     const { name, startDate, endDate, options } = req.body;
@@ -92,7 +86,6 @@ exports.getAllEvents = async (req, res) => {
     }
 };
 
-// Новый эндпоинт для получения результатов голосования
 exports.getVotingResults = async (req, res) => {
     const { event_id } = req.params;
 
@@ -102,19 +95,16 @@ exports.getVotingResults = async (req, res) => {
             return res.status(404).json({ message: 'Мероприятие не найдено' });
         }
 
-        // Проверяем, были ли уже подсчитаны результаты
         if (!event.rows[0].results) {
             return res.status(400).json({ message: 'Голосование еще не завершено или результаты не подсчитаны' });
         }
 
-        // Отправляем результаты
         res.status(200).json({ results: event.rows[0].results });
     } catch (err) {
         res.status(500).json({ message: 'Ошибка при получении результатов голосования', error: err.message });
     }
 };
 
-// Получить мероприятие по ID
 exports.getEventById = async (req, res) => {
     const { event_id } = req.params;
     try {

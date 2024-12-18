@@ -10,35 +10,28 @@ const Modal = ({ onClose, onCreate }) => {
     const currentDate = new Date();
     const currentDateString = currentDate.toISOString().split('T')[0]; // yyyy-mm-dd
 
-    // Формируем дату начала как текущую дату с временем (например, сейчас)
-    const startDate = currentDate.toISOString(); // Форматируем как ISO строку для отправки
+    const startDate = currentDate.toISOString();
 
-    // Обработчик изменения элемента голосования
     const handleOptionChange = (index, value) => {
         const updatedOptions = [...options];
         updatedOptions[index] = value;
         setOptions(updatedOptions);
     };
 
-    // Обработчик добавления нового элемента голосования
     const handleAddOption = () => {
         setOptions([...options, '']);
     };
 
-    // Обработчик удаления элемента голосования
     const handleRemoveOption = (index) => {
         const updatedOptions = options.filter((_, i) => i !== index);
         setOptions(updatedOptions);
     };
 
-    // Обработчик отправки формы
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Проверка на пустые или дублирующиеся элементы голосования
         const uniqueOptions = [...new Set(options.filter(option => option.trim() !== ''))];
 
-        // Собираем дату и время в один объект для startDate и endDate
         const endDateTime = new Date(`${endDate}T${endTime}`);
         const currentDateTime = new Date();
 
@@ -47,22 +40,19 @@ const Modal = ({ onClose, onCreate }) => {
             return;
         }
 
-        // Формируем данные для отправки в нужном формате
         const eventData = {
             name,
-            startDate, // Используем автоматически созданную дату начала
-            endDate: endDateTime.toISOString(), // Формируем правильную дату окончания
-            options: uniqueOptions.join(';'), // Собираем строку с разделителем ;
-            organizerId: 2, // Пример ID организатора
+            startDate,
+            endDate: endDateTime.toISOString(),
+            options: uniqueOptions.join(';'),
+            organizerId: 2,
         };
 
         try {
-            // Отправляем данные на сервер
             await onCreate(eventData);
 
-            // Показать успешное сообщение
             alert('Мероприятие успешно создано!');
-            onClose(); // Закрыть модальное окно
+            onClose();
         } catch (error) {
             console.error('Ошибка при создании мероприятия:', error);
             alert('Ошибка при создании мероприятия.');

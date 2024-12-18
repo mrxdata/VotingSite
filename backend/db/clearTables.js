@@ -1,7 +1,7 @@
 const pool = require('./db');
 
 const clearAllVoters = async () => {
-    const query = 'DELETE FROM voters'; // Удаляем все записи из таблицы voters
+    const query = 'DELETE FROM voters';
     try {
         await pool.query(query);
         console.log('Все записи из таблицы voters удалены');
@@ -10,9 +10,8 @@ const clearAllVoters = async () => {
     }
 };
 
-// Функция для удаления всех голосов из таблицы votes
 const clearAllVotes = async () => {
-    const query = 'DELETE FROM votes'; // Удаляем все записи из таблицы votes
+    const query = 'DELETE FROM votes';
     try {
         await pool.query(query);
         console.log('Все записи из таблицы votes удалены');
@@ -21,13 +20,11 @@ const clearAllVotes = async () => {
     }
 };
 
-// Вызов функций очистки
 const cleanDatabase = async () => {
     await clearAllVotes();
     await clearAllVoters();
 };
 
-// Запуск очистки
 cleanDatabase().catch((error) => {
     console.error('Ошибка при очистке базы данных:', error);
 });

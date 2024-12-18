@@ -10,13 +10,11 @@ exports.register = async (req, res) => {
     }
 
     try {
-        // Проверка существующего пользователя
         const userExists = await pool.query('SELECT * FROM Organizers WHERE Login = $1', [login]);
         if (userExists.rows.length > 0) {
             return res.status(400).json({ message: 'Пользователь с таким логином уже существует.' });
         }
 
-        // Хеширование пароля и создание пользователя
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = await pool.query(
             'INSERT INTO Organizers (Login, Password) VALUES ($1, $2) RETURNING *',

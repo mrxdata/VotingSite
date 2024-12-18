@@ -20,7 +20,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api', voteRoutes);
 app.get('/votes/status', async (req, res) => {
     const { event_id } = req.query;
-    const userId = req.user.id; // предположим, что вы используете JWT
+    const userId = req.user.id;
 
     try {
         const vote = await Votes.findOne({ where: { event_id, user_id: userId } });

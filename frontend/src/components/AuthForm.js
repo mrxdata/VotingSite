@@ -7,8 +7,8 @@ const AuthForm = () => {
     const [isLogin, setIsLogin] = useState(true);
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-    const [isAuthenticated, setIsAuthenticated] = useState(false); // Состояние авторизации
-    const navigate = useNavigate(); // Хук для навигации
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,10 +24,9 @@ const AuthForm = () => {
                 alert(isLogin ? 'Авторизация успешна!' : 'Регистрация успешна!');
                 localStorage.setItem('authToken', response.data.token);
                 setIsAuthenticated(true);
-                navigate('/dashboard'); // Перенаправляем на страницу /dashboard
+                navigate('/dashboard');
             }
         } catch (error) {
-            // Обрабатываем ошибки и показываем alert
             alert(error.response?.data?.message || 'Произошла ошибка при запросе.');
         }
     };
