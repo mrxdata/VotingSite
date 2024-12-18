@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from "react-router-dom";
 import VotingOptions from "../components/VotingOptions";
-import styles from './VotingPage.module.css'; // Импорт CSS модуля
+import styles from './VotingPage.module.css';
 
 const VotingPage = () => {
     const [eventData, setEventData] = useState(null);
@@ -14,23 +14,21 @@ const VotingPage = () => {
     const { eventId } = useParams();
 
     const getCaptchaToken = () => {
-        return Math.random().toString(36).substring(2, 15);
+        return                                                                                                                                                                                                  Math.random().toString(36).substring(2, 15);
     };
 
     const getTimeSpent = () => {
-        return Math.floor(Math.random() * (300 - 100 + 1)) + 100;
+        return                                                                                                                                                                                                                                  Math.floor(Math.random() * (300 - 100 + 1)) + 100;
     };
 
     useEffect(() => {
         const checkVoteStatus = async () => {
-            // Сначала проверяем локально
             const savedVoteStatus = localStorage.getItem(`voteSubmitted-${eventId}`);
             if (savedVoteStatus === 'true') {
                 setVoteSubmitted(true);
                 return;
             }
 
-            // Если локальных данных нет, проверяем на сервере
             try {
                 const voteStatusResponse = await axios.get(`${process.env.REACT_APP_API_URL}/votes/status`, {
                     params: { event_id: eventId },
@@ -42,7 +40,6 @@ const VotingPage = () => {
                 const hasVoted = voteStatusResponse.data.voteSubmitted;
                 setVoteSubmitted(hasVoted);
 
-                // Обновляем localStorage для ускорения будущих проверок
                 if (hasVoted) {
                     localStorage.setItem(`voteSubmitted-${eventId}`, 'true');
                 }
@@ -73,9 +70,12 @@ const VotingPage = () => {
                 console.error('Ошибка при загрузке данных мероприятия:', error);
             }
         };
-
-        checkVoteStatus();
-        fetchEventData();
+        (async () => {
+            await checkVoteStatus();
+        })();
+        (async () => {
+            await fetchEventData();
+        })();
     }, [eventId]);
 
     const handleVote = async () => {
@@ -104,7 +104,6 @@ const VotingPage = () => {
                 console.log(response.data.message);
                 setVoteSubmitted(true);
 
-                // Устанавливаем в localStorage только после успешного голосования
                 localStorage.setItem(`voteSubmitted-${eventId}`, 'true');
             } catch (error) {
                 console.error('Ошибка при голосовании:', error.response ? error.response.data.error : error);
@@ -143,7 +142,6 @@ const VotingPage = () => {
 
         const totalVotes = results.reduce((sum, result) => sum + result.count, 0);
 
-        // Формируем список с результатами
         const calculatedResults = options.map(option => {
             const count = resultsMap.get(option) || 0;
             return {
