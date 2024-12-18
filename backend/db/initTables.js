@@ -26,7 +26,7 @@ const createTables = async () => {
           start_datetime TIMESTAMP NOT NULL,
           end_datetime TIMESTAMP NOT NULL,
           organizer_id INT NOT NULL,
-          options JSONB,
+          options TEXT,
           results JSONB,
           FOREIGN KEY (organizer_id) REFERENCES organizers(id)
       );

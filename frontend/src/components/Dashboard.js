@@ -44,7 +44,7 @@ const Dashboard = () => {
         (async () => {
             await fetchEvents(); // Загружаем мероприятия
         })();
-    }, []); // Пустой массив зависимостей, чтобы загрузить данные только при монтировании компонента
+    }, []);
 
     const closeModal = () => setIsModalOpen(false);
 
@@ -57,14 +57,13 @@ const Dashboard = () => {
                 },
             });
 
-            // Перезапрашиваем мероприятия после создания нового
             await fetchEvents();
             closeModal();
         } catch (error) {
             if (error.response && error.response.status === 401) {
                 alert('Ваша сессия истекла. Пожалуйста, войдите снова.');
                 localStorage.removeItem('authToken');
-                navigate('/login'); // Перенаправляем на страницу авторизации
+                navigate('/'); // Перенаправляем на страницу авторизации
             } else {
                 console.error('Ошибка при создании мероприятия:', error.response ? error.response.data : error.message);
             }

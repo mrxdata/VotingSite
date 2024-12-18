@@ -1,6 +1,46 @@
 const pool = require('../db/db');
 const cron = require('node-cron');
 
+const countVotes = async (eventId) => {
+    try {
+        const votes = await pool.query('SELECT selected_element FROM votes WHERE event_id = $1', [eventId]);
+        const totalVotes = votes.rows.length;
+
+        if (totalVotes === 0) {
+            return [];
+        }
+
+        // Подсчитываем количество голосов для каждой опции
+        const voteCount = {};
+        votes.rows.forEach(vote => {
+            const selectedElement = vote.selected_element;
+            if (voteCount[selectedElement]) {
+                voteCount[selectedElement]++;
+            } else {
+                voteCount[selectedElement] = 1;
+            }
+        });
+
+        // Преобразуем результат в массив
+        const results = Object.keys(voteCount).map(option => {
+            const count = voteCount[option];
+            const percentage = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
+            return {
+                option: option,
+                count: count,
+                percentage: percentage.toFixed(2) // округляем до 2 знаков
+            };
+        });
+
+        return results;
+    } catch (err) {
+        console.error('Ошибка при подсчете голосов:', err.message);
+        return [];
+    }
+};
+
+
+// Функция для закрытия голосования для мероприятий с истекшим временем
 const closeExpiredEvents = async () => {
     try {
         const currentDate = new Date();
@@ -18,33 +58,8 @@ const closeExpiredEvents = async () => {
     }
 };
 
-// Подсчёт голосов
-const countVotes = async (eventId) => {
-    try {
-        // Получаем все голоса для данного мероприятия
-        const votes = await pool.query('SELECT * FROM votes WHERE event_id = $1', [eventId]);
-        const totalVotes = votes.rows.length;
-
-        const options = await pool.query('SELECT options FROM events WHERE event_id = $1', [eventId]);
-
-        const results = options.rows.map(option => {
-            const count = votes.rows.filter(vote => vote.option_id === option.option_id).length;
-            return {
-                option: option.option_name,
-                count: count,
-                percentage: totalVotes ? (count / totalVotes) * 100 : 0
-            };
-        });
-
-        return results;
-    } catch (err) {
-        console.error('Ошибка при подсчете голосов:', err.message);
-        return [];
-    }
-};
-
+// Запуск задачи каждый раз в минуту
 cron.schedule('*/1 * * * *', closeExpiredEvents);
-
 exports.createEvent = async (req, res) => {
     const { name, startDate, endDate, options } = req.body;
     const organizerId = req.user?.id;
