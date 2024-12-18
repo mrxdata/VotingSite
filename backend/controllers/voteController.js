@@ -50,4 +50,5 @@ const submitVote = async (req, res) => {
     }
 };
 
+
 module.exports = { submitVote };

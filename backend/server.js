@@ -18,6 +18,18 @@ app.use(bodyParser.json());
 app.use('/api/events', eventsRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api', voteRoutes);
+app.get('/votes/status', async (req, res) => {
+    const { event_id } = req.query;
+    const userId = req.user.id; // предположим, что вы используете JWT
+
+    try {
+        const vote = await Votes.findOne({ where: { event_id, user_id: userId } });
+        res.json({ voteSubmitted: !!vote });
+    } catch (error) {
+        console.error('Ошибка при проверке статуса голосования:', error);
+        res.status(500).json({ error: 'Не удалось проверить статус голосования' });
+    }
+});
 
 app.get('/events/:eventId', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));

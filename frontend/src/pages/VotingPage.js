@@ -22,10 +22,34 @@ const VotingPage = () => {
     };
 
     useEffect(() => {
-        const savedVoteStatus = localStorage.getItem(`voteSubmitted-${eventId}`);
-        if (savedVoteStatus === 'true') {
-            setVoteSubmitted(true);
-        }
+        const checkVoteStatus = async () => {
+            // Сначала проверяем локально
+            const savedVoteStatus = localStorage.getItem(`voteSubmitted-${eventId}`);
+            if (savedVoteStatus === 'true') {
+                setVoteSubmitted(true);
+                return;
+            }
+
+            // Если локальных данных нет, проверяем на сервере
+            try {
+                const voteStatusResponse = await axios.get(`${process.env.REACT_APP_API_URL}/votes/status`, {
+                    params: { event_id: eventId },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+                    },
+                });
+
+                const hasVoted = voteStatusResponse.data.voteSubmitted;
+                setVoteSubmitted(hasVoted);
+
+                // Обновляем localStorage для ускорения будущих проверок
+                if (hasVoted) {
+                    localStorage.setItem(`voteSubmitted-${eventId}`, 'true');
+                }
+            } catch (error) {
+                console.error('Ошибка при проверке статуса голосования:', error);
+            }
+        };
 
         const fetchEventData = async () => {
             try {
@@ -50,6 +74,7 @@ const VotingPage = () => {
             }
         };
 
+        checkVoteStatus();
         fetchEventData();
     }, [eventId]);
 
@@ -79,12 +104,14 @@ const VotingPage = () => {
                 console.log(response.data.message);
                 setVoteSubmitted(true);
 
+                // Устанавливаем в localStorage только после успешного голосования
                 localStorage.setItem(`voteSubmitted-${eventId}`, 'true');
             } catch (error) {
                 console.error('Ошибка при голосовании:', error.response ? error.response.data.error : error);
             }
         }
     };
+
 
     const formatDate = (dateString) => {
         if (!dateString) return 'Дата не указана';
@@ -126,7 +153,6 @@ const VotingPage = () => {
             };
         });
 
-        // Сортируем по количеству голосов (по убыванию)
         calculatedResults.sort((a, b) => b.count - a.count);
 
         return calculatedResults;
