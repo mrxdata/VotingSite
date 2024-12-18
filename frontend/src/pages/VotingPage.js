@@ -8,8 +8,8 @@ const VotingPage = () => {
     const [eventData, setEventData] = useState(null);
     const [selectedOption, setSelectedOption] = useState(null);
     const [voteSubmitted, setVoteSubmitted] = useState(false);
-    const [isVotingEnded, setIsVotingEnded] = useState(false); // Для отслеживания завершения голосования
-    const [results, setResults] = useState([]); // Для хранения результатов голосования
+    const [isVotingEnded, setIsVotingEnded] = useState(false);
+    const [results, setResults] = useState([]);
 
     const { eventId } = useParams();
 
@@ -35,15 +35,15 @@ const VotingPage = () => {
                     },
                 });
 
-                setEventData(response.data);
+                const eventData = response.data;
+                setEventData(eventData);
 
-                // Проверка, завершено ли голосование
                 const currentDate = new Date();
-                const eventEndDate = new Date(response.data.end_datetime);
+                const eventEndDate = new Date(eventData.end_datetime);
 
                 if (currentDate > eventEndDate) {
                     setIsVotingEnded(true);
-                    setResults(response.data.results || []); // Если результаты есть, показываем их
+                    setResults(eventData.results || []);
                 }
             } catch (error) {
                 console.error('Ошибка при загрузке данных мероприятия:', error);
@@ -79,7 +79,6 @@ const VotingPage = () => {
                 console.log(response.data.message);
                 setVoteSubmitted(true);
 
-                // Сохраняем состояние голосования в localStorage, чтобы при перезагрузке не дать проголосовать снова
                 localStorage.setItem(`voteSubmitted-${eventId}`, 'true');
             } catch (error) {
                 console.error('Ошибка при голосовании:', error.response ? error.response.data.error : error);
@@ -107,22 +106,31 @@ const VotingPage = () => {
     };
 
     const calculateResults = () => {
-        if (!options || options.length === 0) return [];
+        if (!eventData?.options || results.length === 0) return [];
+
+        const options = Array.isArray(eventData.options)
+            ? eventData.options
+            : (typeof eventData.options === 'string' ? eventData.options.split(';') : []);
 
         const resultsMap = new Map(results.map(result => [result.option, result.count]));
 
         const totalVotes = results.reduce((sum, result) => sum + result.count, 0);
 
-        return options.map(option => {
-            const count = resultsMap.get(option) || 0; // Если нет голосов, устанавливаем 0
+        // Формируем список с результатами
+        const calculatedResults = options.map(option => {
+            const count = resultsMap.get(option) || 0;
             return {
                 option,
                 count,
                 percentage: totalVotes > 0 ? (count / totalVotes) * 100 : 0,
             };
         });
-    };
 
+        // Сортируем по количеству голосов (по убыванию)
+        calculatedResults.sort((a, b) => b.count - a.count);
+
+        return calculatedResults;
+    };
 
 
     if (!eventData) {
@@ -141,43 +149,43 @@ const VotingPage = () => {
             <p className={styles.date}>Дата начала: {formatDate(eventData.start_datetime)}</p>
             <p className={styles.date}>Дата окончания: {formatDate(eventData.end_datetime)}</p>
 
-            <div className={styles.optionsContainer}>
-                <h2>Варианты голосования:</h2>
-                <div className={styles.optionsContainer}>
-                    <h2>Варианты голосования:</h2>
-                    {isVotingEnded ? (
-                        <>
-                            {calculatedResults.map((result, index) => (
-                                <div key={index} className={styles.result}>
-                                    <strong>{result.option}</strong>: {result.count} голосов
-                                    ({result.percentage.toFixed(2)}%)
-                                </div>
-                            ))}
-                            <h3>Победитель:</h3>
-                            <div className={styles.result}>
-                                {calculatedResults.length > 0 && (() => {
-                                    const winner = calculatedResults.reduce((max, current) =>
-                                        current.count > max.count ? current : max, calculatedResults[0]
-                                    );
-                                    return (
-                                        <>
-                                            <strong>{winner.option}</strong>: {winner.count} голосов
-                                            ({winner.percentage.toFixed(2)}%)
-                                        </>
-                                    );
-                                })()}
-                            </div>
-
-                        </>
+            {isVotingEnded ? (
+                <div className={styles.resultsContainer}>
+                    <h2>Результаты голосования:</h2>
+                    {calculatedResults.map((result, index) => (
+                        <div key={index} className={styles.result}>
+                            <strong>{result.option}</strong>: {result.count} голосов ({result.percentage.toFixed(2)}%)
+                        </div>
+                    ))}
+                    <h3>Победитель:</h3>
+                    {calculatedResults.length > 0 && calculatedResults[0].count > 0 ? (
+                        <div className={styles.result}>
+                            <strong>{calculatedResults[0].option}</strong> — {calculatedResults[0].count} голосов
+                            ({calculatedResults[0].percentage.toFixed(2)}%)
+                        </div>
                     ) : (
-                        <VotingOptions
-                            options={options}
-                            selectedOption={selectedOption}
-                            setSelectedOption={setSelectedOption}
-                        />
+                        <div className={styles.result}>
+                            Нет голосов для определения победителя
+                        </div>
                     )}
                 </div>
-            </div>
+            ) : (
+                <div className={styles.optionsContainer}>
+                    <h2>Варианты голосования:</h2>
+                    <VotingOptions
+                        options={options}
+                        selectedOption={selectedOption}
+                        setSelectedOption={setSelectedOption}
+                    />
+                    <button
+                        className={styles.voteButton}
+                        onClick={handleVote}
+                        disabled={voteSubmitted || !selectedOption}
+                    >
+                        {voteSubmitted ? "Голос отправлен" : "Проголосовать"}
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
